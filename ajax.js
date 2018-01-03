@@ -436,12 +436,14 @@
     }
 
     function _ajax_fail_cb(jqXHR, textStatus, errorThrown) {
-        var err_result = Ajax.beautifyError(arguments);
-
-        this.error = err_result;
+        if (jqXHR.hasOwnProperty('responseJSON')) {
+            this.response = jqXHR.responseJSON;
+        }
+        
+        this.error = Ajax.beautifyError(arguments);
 
         if (!this.isRetryable() && !this.isAborted()) {
-            this.emitEvent('fail', err_result.message, err_result.code);
+            this.emitEvent('fail', this.error.message, this.error.code);
         }
     }
 
